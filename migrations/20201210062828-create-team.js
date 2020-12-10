@@ -1,7 +1,7 @@
 'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Player', {
+    await queryInterface.createTable('Team', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,14 +11,20 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      position: {
+      abbreviated_name: {
+        type: Sequelize.STRING,
+      },
+      alternate_name: {
+        type: Sequelize.STRING,
+      },
+      alternate_abbreviated_name: {
         type: Sequelize.STRING,
       },
       image_url: {
         type: Sequelize.STRING,
       },
-      age: {
-        type: Sequelize.INTEGER,
+      division: {
+        type: Sequelize.STRING,
       },
       created_at: {
         allowNull: false,
@@ -31,6 +37,6 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Player')
+    await queryInterface.dropTable('Team')
   },
 }
