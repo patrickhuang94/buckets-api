@@ -1,5 +1,8 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
+const Player = require('../../models/player')
+
+const LATEST_SEASON = '2019-20'
 
 // function parsePlayerImage($) {
 //   const image = $('.media-item').find('img').attr('src')
@@ -64,64 +67,68 @@ async function fetchPlayersUrls({ season }) {
 }
 
 async function fetchPlayerStats(player) {
-  const playerStats = {}
+  const player_stats = {}
 
   const url = `https://www.basketball-reference.com${player.url}`
-  // const url = 'https://www.basketball-reference.com/players/o/oladivi01.html'
   const html = await axios.get(url)
   const $ = cheerio.load(html.data)
+
+  const image_url = $('.media-item').find('img').attr('src')
 
   $('#per_game')
     .find('tbody')
     .each((_, element) => {
+      const season_player_stats = []
+      let primary_position
+      let current_age
       $(element)
         .find('.full_table')
         .each((_, ele) => {
           const season = $(ele).find('th[data-stat="season"]').text()
-          const team = $(ele).find('td[data-stat="team_id"]').text()
           const position = $(ele).find('td[data-stat="pos"]').text()
           const age = $(ele).find('td[data-stat="age"]').text()
+          const team = $(ele).find('td[data-stat="team_id"]').text()
           const games = $(ele).find('td[data-stat="g"]').text()
-          const gamesStarted = $(ele).find('td[data-stat="gs"]').text()
+          const games_started = $(ele).find('td[data-stat="gs"]').text()
           const minutes = $(ele).find('td[data-stat="mp_per_g"]').text()
-          const fieldGoals = $(ele).find('td[data-stat="fg_per_g"]').text()
-          const fieldGoalAttempts = $(ele)
+          const field_goals = $(ele).find('td[data-stat="fg_per_g"]').text()
+          const field_goal_attempts = $(ele)
             .find('td[data-stat="fga_per_g"]')
             .text()
-          const fieldGoalPct = $(ele).find('td[data-stat="fg_pct"]').text()
-          const threePointFieldGoals = $(ele)
+          const field_goal_pct = $(ele).find('td[data-stat="fg_pct"]').text()
+          const three_point_field_goals = $(ele)
             .find('td[data-stat="fg3_per_g"]')
             .text()
-          const threePointFieldGoalAttempts = $(ele)
+          const three_point_field_goal_attempts = $(ele)
             .find('td[data-stat="fg3a_per_g"]')
             .text()
-          const threePointFieldGoalPct = $(ele)
+          const three_point_field_goal_pct = $(ele)
             .find('td[data-stat="fg3_pct"]')
             .text()
-          const twoPointFieldGoals = $(ele)
+          const two_point_field_goals = $(ele)
             .find('td[data-stat="fg2_per_g"]')
             .text()
-          const twoPointFieldGoalAttempts = $(ele)
+          const two_point_field_goal_attempts = $(ele)
             .find('td[data-stat="fg2a_per_g"]')
             .text()
-          const twoPointFieldGoalPct = $(ele)
+          const two_point_field_goal_pct = $(ele)
             .find('td[data-stat="fg2_pct"]')
             .text()
-          const effectiveFieldGoalPct = $(ele)
+          const effective_field_goal_pct = $(ele)
             .find('td[data-stat="efg_pct"]')
             .text()
-          const freeThrows = $(ele).find('td[data-stat="ft_per_g"]').text()
-          const freeThrowAttempts = $(ele)
+          const free_throws = $(ele).find('td[data-stat="ft_per_g"]').text()
+          const free_throw_attempts = $(ele)
             .find('td[data-stat="fta_per_g"]')
             .text()
-          const freeThrowPct = $(ele).find('td[data-stat="ft_pct"]').text()
-          const offensiveRebounds = $(ele)
+          const free_throw_pct = $(ele).find('td[data-stat="ft_pct"]').text()
+          const offensive_rebounds = $(ele)
             .find('td[data-stat="orb_per_g"]')
             .text()
-          const defensiveRebounds = $(ele)
+          const defensive_rebounds = $(ele)
             .find('td[data-stat="drb_per_g"]')
             .text()
-          const totalRebounds = $(ele).find('td[data-stat="trb_per_g"]').text()
+          const total_rebounds = $(ele).find('td[data-stat="trb_per_g"]').text()
           const assists = $(ele).find('td[data-stat="ast_per_g"]').text()
           const steals = $(ele).find('td[data-stat="stl_per_g"]').text()
           const blocks = $(ele).find('td[data-stat="blk_per_g"]').text()
@@ -129,48 +136,56 @@ async function fetchPlayerStats(player) {
           const fouls = $(ele).find('td[data-stat="pf_per_g"]').text()
           const points = $(ele).find('td[data-stat="pts_per_g"]').text()
 
-          playerStats[player.name] = {
-            ...playerStats[player.name],
-            [season]: {
-              team,
-              position,
-              age,
-              games,
-              gamesStarted,
-              minutes,
-              fieldGoals,
-              fieldGoalAttempts,
-              fieldGoalPct,
-              threePointFieldGoals,
-              threePointFieldGoalAttempts,
-              threePointFieldGoalPct,
-              twoPointFieldGoals,
-              twoPointFieldGoalAttempts,
-              twoPointFieldGoalPct,
-              effectiveFieldGoalPct,
-              freeThrows,
-              freeThrowAttempts,
-              freeThrowPct,
-              offensiveRebounds,
-              defensiveRebounds,
-              totalRebounds,
-              assists,
-              steals,
-              blocks,
-              turnovers,
-              fouls,
-              points,
-            },
+          season_player_stats.push({
+            season,
+            position,
+            team,
+            games,
+            games_started,
+            minutes,
+            field_goals,
+            field_goal_attempts,
+            field_goal_pct,
+            three_point_field_goals,
+            three_point_field_goal_attempts,
+            three_point_field_goal_pct,
+            two_point_field_goals,
+            two_point_field_goal_attempts,
+            two_point_field_goal_pct,
+            effective_field_goal_pct,
+            free_throws,
+            free_throw_attempts,
+            free_throw_pct,
+            offensive_rebounds,
+            defensive_rebounds,
+            total_rebounds,
+            assists,
+            steals,
+            blocks,
+            turnovers,
+            fouls,
+            points,
+          })
+
+          if (season === LATEST_SEASON) {
+            primary_position = position
+            current_age = age
           }
         })
+
+      player_stats[player.name] = {
+        age: current_age,
+        position: primary_position,
+        image_url,
+        stats: season_player_stats,
+      }
     })
 
-  return playerStats
+  return player_stats
 }
 
 async function main() {
   console.log('Starting to scrape...')
-  let count = 0
 
   // const teams = await fetchAllTeams()
 
@@ -183,22 +198,22 @@ async function main() {
     season: 2020,
   })
 
-  console.log(Object.values(playerUrls).length)
-
-  await Promise.all(
-    Object.values(playerUrls).map(async (player) => {
-      const result = await fetchPlayerStats(player)
-      count++
-      console.log('count: ', count, player.name)
-      return result
-    })
-  )
-
-  // const result = await fetchPlayerStats({
-  //   name: 'Victor Oladipo',
-  //   url: '/players/o/oladivi01.html',
-  // })
-  // console.log({ result })
+  for (const player of Object.values(playerUrls)) {
+    const foundPlayer = await Player.findAll({ where: { name: player.name } })
+    if (foundPlayer.length) {
+      console.log('Player already exists')
+    } else {
+      console.log(`Grabbing data for ${player.name}`)
+      const fetchedPlayer = await fetchPlayerStats(player)
+      console.log('Fetched data from basketball reference!')
+      await Player.create({
+        name: player.name,
+        age: fetchedPlayer[player.name].age,
+        position: fetchedPlayer[player.name].position,
+        image_url: fetchedPlayer[player.name].image_url,
+      })
+    }
+  }
 
   console.log('Done!')
 }
