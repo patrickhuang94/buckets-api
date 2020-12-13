@@ -12,16 +12,14 @@ const app = express()
 const port = 3001
 
 const player = require('../routes/player')
+const team = require('../routes/team')
 
 app.listen(port, () => console.log(`Listening on port ${port}`))
 
 app.use(bodyParser.json())
 app.use(cookieParser())
 
-app.get('/', (req, res) => {
-  res.send('Got here!')
-})
-
 app.use('/player', player)
+app.use('/team', team)
 
 module.exports = app
