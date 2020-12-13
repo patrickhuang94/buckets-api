@@ -9,52 +9,34 @@ async function find({ name }) {
         [Op.like]: `%${name}%`,
       },
     },
+    include: Team,
   })
 
-  const response = []
-  for (const player of players) {
-    const team = await Team.findOne({
-      where: { id: player.team_id },
-    })
-
-    response.push({
-      name: player.name,
-      position: player.position,
-      image_url: player.image_url,
-      age: player.age,
-      team: team.name,
-      team: {
-        full_name: team.name,
-        short_name: team.abbreviated_name,
-      },
-    })
-  }
-
-  return response
+  return players.map((player) => ({
+    name: player.name,
+    position: player.position,
+    image_url: player.image_url,
+    age: player.age,
+    team: {
+      full_name: player.team.name,
+      short_name: player.team.abbreviated_name,
+    },
+  }))
 }
 
 async function findAll() {
-  const players = await Player.findAll()
+  const players = await Player.findAll({ include: Team })
 
-  const response = []
-  for (const player of players) {
-    const team = await Team.findOne({
-      where: { id: player.team_id },
-    })
-
-    response.push({
-      name: player.name,
-      position: player.position,
-      image_url: player.image_url,
-      age: player.age,
-      team: {
-        full_name: team.name,
-        short_name: team.abbreviated_name,
-      },
-    })
-  }
-
-  return response
+  return players.map((player) => ({
+    name: player.name,
+    position: player.position,
+    image_url: player.image_url,
+    age: player.age,
+    team: {
+      full_name: player.team.name,
+      short_name: player.team.abbreviated_name,
+    },
+  }))
 }
 
 module.exports = {
