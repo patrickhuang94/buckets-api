@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 const db = require('../config/database')
 
 const Team = db.define(
-  'Team',
+  'team',
   {
     name: DataTypes.STRING,
     abbreviated_name: DataTypes.STRING,

@@ -3,7 +3,7 @@ const db = require('../config/database')
 const Team = require('./team')
 
 const Player = db.define(
-  'Player',
+  'player',
   {
     name: DataTypes.STRING,
     position: DataTypes.STRING,
