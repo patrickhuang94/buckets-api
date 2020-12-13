@@ -1,19 +1,23 @@
-const { Model, DataTypes } = require('sequelize')
+const { DataTypes } = require('sequelize')
 const db = require('../config/database')
+const Team = require('./team')
 
-class Player extends Model {}
-
-Player.init(
+const Player = db.define(
+  'Player',
   {
     name: DataTypes.STRING,
     position: DataTypes.STRING,
     image_url: DataTypes.STRING,
     age: DataTypes.INTEGER,
+    team_id: DataTypes.INTEGER,
   },
   {
-    sequelize: db,
-    modelName: 'Player',
+    timestamps: true,
+    underscored: true,
   }
 )
+
+Player.belongsTo(Team, { name: 'team_id', field: 'team_id' })
+Team.hasMany(Player)
 
 module.exports = Player
