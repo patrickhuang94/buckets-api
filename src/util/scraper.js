@@ -1,42 +1,9 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
 const Player = require('../../models/player')
+const Team = require('../../models/team')
 
 const LATEST_SEASON = '2019-20'
-
-// function parsePlayerImage($) {
-//   const image = $('.media-item').find('img').attr('src')
-//   return image
-// }
-
-async function fetchAllTeams() {
-  const teams = {}
-
-  const url = 'https://www.basketball-reference.com/teams/'
-  const html = await axios.get(url)
-  const $ = cheerio.load(html.data)
-
-  $('#teams_active')
-    .find('tbody')
-    .each((_, element) => {
-      $(element)
-        .find('.full_table')
-        .each((_, ele) => {
-          const teamName = $(ele).contents().eq(0).text()
-          const seasonYearStart = $(ele).contents().eq(2).text()
-          const seasonYearEnd = $(ele).contents().eq(3).text()
-          const teamUrl = $(ele).contents().find('a').attr('href')
-
-          teams[teamName] = {
-            seasonYearStart,
-            seasonYearEnd,
-            url: `https://www.basketball-reference.com${teamUrl}`,
-          }
-        })
-    })
-
-  return teams
-}
 
 async function fetchPlayersUrls({ season }) {
   const playerUrls = {}
@@ -81,8 +48,10 @@ async function fetchPlayerStats(player) {
       const season_player_stats = []
       let primary_position
       let current_age
+      let current_team
+
       $(element)
-        .find('.full_table')
+        .find('tr')
         .each((_, ele) => {
           const season = $(ele).find('th[data-stat="season"]').text()
           const position = $(ele).find('td[data-stat="pos"]').text()
@@ -170,12 +139,14 @@ async function fetchPlayerStats(player) {
           if (season === LATEST_SEASON) {
             primary_position = position
             current_age = age
+            current_team = team
           }
         })
 
       player_stats[player.name] = {
         age: current_age,
         position: primary_position,
+        current_team,
         image_url,
         stats: season_player_stats,
       }
@@ -186,13 +157,6 @@ async function fetchPlayerStats(player) {
 
 async function main() {
   console.log('Starting to scrape...')
-
-  // const teams = await fetchAllTeams()
-
-  // Object.values(teams).forEach((team) => {
-  //   const url = team.url
-  //   console.log('url: ', url)
-  // })
 
   const playerUrls = await fetchPlayersUrls({
     season: 2020,
@@ -205,12 +169,18 @@ async function main() {
     } else {
       console.log(`Grabbing data for ${player.name}`)
       const fetchedPlayer = await fetchPlayerStats(player)
-      console.log('Fetched data from basketball reference!')
+      const currentTeam = fetchedPlayer[player.name].current_team
+
+      const foundTeam = await Team.findOne({
+        where: { abbreviated_name: currentTeam },
+      })
+
       await Player.create({
         name: player.name,
         age: fetchedPlayer[player.name].age,
         position: fetchedPlayer[player.name].position,
         image_url: fetchedPlayer[player.name].image_url,
+        team_id: foundTeam.id,
       })
     }
   }
