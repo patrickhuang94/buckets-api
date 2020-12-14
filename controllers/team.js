@@ -1,4 +1,3 @@
-const { Op } = require('sequelize')
 const Team = require('../models/team')
 
 async function findAll() {
