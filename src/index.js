@@ -13,6 +13,7 @@ const port = 3001
 
 const player = require('../routes/player')
 const team = require('../routes/team')
+const seasonStats = require('../routes/season_stats')
 
 app.listen(port, () => console.log(`Listening on port ${port}`))
 
@@ -21,5 +22,6 @@ app.use(cookieParser())
 
 app.use('/player', player)
 app.use('/team', team)
+app.use('/season_stats', seasonStats)
 
 module.exports = app
