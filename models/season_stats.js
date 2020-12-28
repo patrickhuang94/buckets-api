@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize')
 const db = require('../config/database')
 const Player = require('./player')
+const Team = require('./team')
 
 const SeasonStats = db.define(
   'season_stats',
@@ -32,6 +33,7 @@ const SeasonStats = db.define(
     fouls: DataTypes.FLOAT,
     points: DataTypes.FLOAT,
     player_id: DataTypes.INTEGER,
+    team_id: DataTypes.INTEGER,
   },
   {
     timestamps: true,
@@ -40,6 +42,8 @@ const SeasonStats = db.define(
 )
 
 SeasonStats.belongsTo(Player, { name: 'player_id', field: 'player_id' })
+SeasonStats.belongsTo(Team, { name: 'team_id', field: 'team_id' })
 Player.hasMany(SeasonStats)
+Team.hasMany(SeasonStats)
 
 module.exports = SeasonStats
