@@ -3,10 +3,11 @@ const cheerio = require('cheerio')
 const Player = require('../../models/player')
 const PlayerController = require('../../controllers/player')
 const SeasonStatsController = require('../../controllers/season_stats')
+const SeasonStats = require('../../models/season_stats')
 
 const LATEST_SEASON = '2019-20'
 
-async function fetchPlayersUrls({ season }) {
+async function fetchPlayersUrls({ season, isRetry }) {
   const playerUrls = {}
 
   const url = `https://www.basketball-reference.com/leagues/NBA_${season}_per_game.html`
@@ -30,6 +31,28 @@ async function fetchPlayersUrls({ season }) {
           }
         })
     })
+
+  if (isRetry) {
+    // Network timeouts happen frequently. Use this to find the last player entry
+    // and pick up where it left off.
+    const lastEntry = await SeasonStats.findOne({
+      order: [['id', 'DESC']],
+    })
+    const lastPlayer = await Player.findOne({
+      where: { id: lastEntry.player_id },
+    })
+
+    const indexOfLastPlayer = Object.values(playerUrls)
+      .map((player) => player.name)
+      .indexOf(lastPlayer.name)
+    console.log({ indexOfLastPlayer })
+
+    const truncatedPlayerUrls = Object.values(playerUrls)
+      .map((player) => player)
+      .slice(indexOfLastPlayer + 1)
+
+    return truncatedPlayerUrls
+  }
 
   return playerUrls
 }
@@ -106,44 +129,50 @@ async function fetchPlayerStats(player) {
           const fouls = $(ele).find('td[data-stat="pf_per_g"]').text()
           const points = $(ele).find('td[data-stat="pts_per_g"]').text()
 
-          season_player_stats.push({
-            season,
-            position,
-            team,
-            games_played: parseInt(games_played) || 0,
-            games_started: parseInt(games_started) || 0,
-            minutes_played: parseFloat(minutes_played) || 0,
-            field_goals: parseFloat(field_goals) || 0,
-            field_goal_attempts: parseFloat(field_goal_attempts) || 0,
-            field_goal_pct: parseFloat(field_goal_pct) || 0,
-            three_point_field_goals: parseFloat(three_point_field_goals) || 0,
-            three_point_field_goal_attempts:
-              parseFloat(three_point_field_goal_attempts) || 0,
-            three_point_field_goal_pct:
-              parseFloat(three_point_field_goal_pct) || 0,
-            two_point_field_goals: parseFloat(two_point_field_goals) || 0,
-            two_point_field_goal_attempts:
-              parseFloat(two_point_field_goal_attempts) || 0,
-            two_point_field_goal_pct: parseFloat(two_point_field_goal_pct) || 0,
-            effective_field_goal_pct: parseFloat(effective_field_goal_pct) || 0,
-            free_throws: parseFloat(free_throws) || 0,
-            free_throw_attempts: parseFloat(free_throw_attempts) || 0,
-            free_throw_pct: parseFloat(free_throw_pct) || 0,
-            offensive_rebounds: parseFloat(offensive_rebounds) || 0,
-            defensive_rebounds: parseFloat(defensive_rebounds) || 0,
-            total_rebounds: parseFloat(total_rebounds) || 0,
-            assists: parseFloat(assists) || 0,
-            steals: parseFloat(steals) || 0,
-            blocks: parseFloat(blocks) || 0,
-            turnovers: parseFloat(turnovers) || 0,
-            fouls: parseFloat(fouls) || 0,
-            points: parseFloat(points) || 0,
-          })
+          // Some players "Did Not Play" during some seasons, and so
+          // do not have an associated team
+          if (team) {
+            season_player_stats.push({
+              season,
+              position,
+              team,
+              games_played: parseInt(games_played) || 0,
+              games_started: parseInt(games_started) || 0,
+              minutes_played: parseFloat(minutes_played) || 0,
+              field_goals: parseFloat(field_goals) || 0,
+              field_goal_attempts: parseFloat(field_goal_attempts) || 0,
+              field_goal_pct: parseFloat(field_goal_pct) || 0,
+              three_point_field_goals: parseFloat(three_point_field_goals) || 0,
+              three_point_field_goal_attempts:
+                parseFloat(three_point_field_goal_attempts) || 0,
+              three_point_field_goal_pct:
+                parseFloat(three_point_field_goal_pct) || 0,
+              two_point_field_goals: parseFloat(two_point_field_goals) || 0,
+              two_point_field_goal_attempts:
+                parseFloat(two_point_field_goal_attempts) || 0,
+              two_point_field_goal_pct:
+                parseFloat(two_point_field_goal_pct) || 0,
+              effective_field_goal_pct:
+                parseFloat(effective_field_goal_pct) || 0,
+              free_throws: parseFloat(free_throws) || 0,
+              free_throw_attempts: parseFloat(free_throw_attempts) || 0,
+              free_throw_pct: parseFloat(free_throw_pct) || 0,
+              offensive_rebounds: parseFloat(offensive_rebounds) || 0,
+              defensive_rebounds: parseFloat(defensive_rebounds) || 0,
+              total_rebounds: parseFloat(total_rebounds) || 0,
+              assists: parseFloat(assists) || 0,
+              steals: parseFloat(steals) || 0,
+              blocks: parseFloat(blocks) || 0,
+              turnovers: parseFloat(turnovers) || 0,
+              fouls: parseFloat(fouls) || 0,
+              points: parseFloat(points) || 0,
+            })
 
-          if (season === LATEST_SEASON) {
-            primary_position = position
-            current_age = age
-            current_team = team
+            if (season === LATEST_SEASON) {
+              primary_position = position
+              current_age = age
+              current_team = team
+            }
           }
         })
 
@@ -164,6 +193,7 @@ async function main() {
 
   const playerUrls = await fetchPlayersUrls({
     season: 2020,
+    isRetry: true,
   })
 
   for (const player of Object.values(playerUrls)) {
@@ -186,8 +216,14 @@ async function main() {
       const existingStats = await SeasonStatsController.findByPlayerId({
         player_id: foundPlayer.id,
       })
+
       if (existingStats.length) {
-        console.log('Player stats already exist!')
+        console.log('Skipping...')
+        // console.log('Updating player stats...')
+        // await SeasonStatsController.update({
+        //   player_id: foundPlayer.id,
+        //   stats: fetchedPlayer[player.name].stats,
+        // })
       } else {
         await SeasonStatsController.create({
           player_id: foundPlayer.id,
