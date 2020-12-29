@@ -4,7 +4,7 @@
   "description": "API providing scraped basketball-reference NBA stats",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
+    "start": "npx nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,6 +16,7 @@
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "helmet": "^4.3.1",
     "mysql2": "^2.2.5",
     "sequelize": "^6.3.5"
   },

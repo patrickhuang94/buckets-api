@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const db = require('../config/database')
@@ -19,6 +20,7 @@ app.listen(port, () => console.log(`Listening on port ${port}`))
 
 app.use(bodyParser.json())
 app.use(cookieParser())
+app.use(helmet())
 
 app.use('/player', player)
 app.use('/team', team)
