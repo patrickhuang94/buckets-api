@@ -10,7 +10,7 @@ db.authenticate()
   .catch((err) => console.log(`Error: ${err}`))
 
 const app = express()
-const port = 3001
+const port = process.env.PORT || 3001
 
 const player = require('./routes/player')
 const team = require('./routes/team')
