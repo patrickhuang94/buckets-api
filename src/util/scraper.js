@@ -1,9 +1,9 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const Player = require('../../models/player')
+const Player = require('../models/player')
+const SeasonStats = require('../models/season_stats')
 const PlayerController = require('../controllers/player')
 const SeasonStatsController = require('../controllers/season_stats')
-const SeasonStats = require('../../models/season_stats')
 
 const LATEST_SEASON = '2020-21'
 
@@ -192,7 +192,7 @@ async function main() {
 
   const playerUrls = await fetchPlayersUrls({
     season: 2021,
-    isRetry: true,
+    isRetry: false,
   })
 
   for (const player of Object.values(playerUrls)) {
