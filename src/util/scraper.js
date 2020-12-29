@@ -45,7 +45,6 @@ async function fetchPlayersUrls({ season, isRetry }) {
     const indexOfLastPlayer = Object.values(playerUrls)
       .map((player) => player.name)
       .indexOf(lastPlayer.name)
-    console.log({ indexOfLastPlayer })
 
     const truncatedPlayerUrls = Object.values(playerUrls)
       .map((player) => player)
