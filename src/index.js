@@ -3,7 +3,7 @@ const express = require('express')
 const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const db = require('../config/database')
+const db = require('./config/database')
 
 db.authenticate()
   .then(() => console.log('Database connected'))
@@ -12,9 +12,9 @@ db.authenticate()
 const app = express()
 const port = 3001
 
-const player = require('../routes/player')
-const team = require('../routes/team')
-const seasonStats = require('../routes/season_stats')
+const player = require('./routes/player')
+const team = require('./routes/team')
+const seasonStats = require('./routes/season_stats')
 
 app.listen(port, () => console.log(`Listening on port ${port}`))
 
