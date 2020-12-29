@@ -214,7 +214,6 @@ async function main() {
       })
     }
 
-    console.log({ foundPlayer, fetchedPlayer })
     const existingStats = await SeasonStatsController.findByPlayerId({
       player_id: foundPlayer.id,
     })
