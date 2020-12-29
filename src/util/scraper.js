@@ -5,7 +5,7 @@ const PlayerController = require('../../controllers/player')
 const SeasonStatsController = require('../../controllers/season_stats')
 const SeasonStats = require('../../models/season_stats')
 
-const LATEST_SEASON = '2019-20'
+const LATEST_SEASON = '2020-21'
 
 async function fetchPlayersUrls({ season, isRetry }) {
   const playerUrls = {}
@@ -192,44 +192,49 @@ async function main() {
   console.log('Starting to scrape...')
 
   const playerUrls = await fetchPlayersUrls({
-    season: 2020,
+    season: 2021,
     isRetry: true,
   })
 
   for (const player of Object.values(playerUrls)) {
-    const foundPlayer = await Player.findOne({ where: { name: player.name } })
-    if (foundPlayer.length) {
-      console.log('Player already exists')
-    } else {
-      console.log(`Grabbing data for ${player.name}`)
-      const fetchedPlayer = await fetchPlayerStats(player)
-      const currentTeam = fetchedPlayer[player.name].current_team
+    let foundPlayer = await Player.findOne({ where: { name: player.name } })
+    const fetchedPlayer = await fetchPlayerStats(player)
 
-      await PlayerController.create({
+    if (foundPlayer) {
+      console.log(`${foundPlayer.name} already exists`)
+    } else {
+      console.log(`Creating player data for ${player.name}`)
+
+      // TODO: positions for 2020-21 players are missing...
+      foundPlayer = await PlayerController.create({
         name: player.name,
         age: fetchedPlayer[player.name].age,
         position: fetchedPlayer[player.name].position,
         image_url: fetchedPlayer[player.name].image_url,
-        team: currentTeam,
+        team: fetchedPlayer[player.name].current_team,
       })
+    }
 
-      const existingStats = await SeasonStatsController.findByPlayerId({
+    console.log({ foundPlayer, fetchedPlayer })
+    const existingStats = await SeasonStatsController.findByPlayerId({
+      player_id: foundPlayer.id,
+    })
+
+    if (existingStats.length) {
+      console.log('Updating player stats...')
+
+      // Only update the current season's stats
+      const stats = fetchedPlayer[player.name].stats
+      const currentSeasonStats = stats[stats.length - 1]
+      await SeasonStatsController.update({
         player_id: foundPlayer.id,
+        stats: currentSeasonStats,
       })
-
-      if (existingStats.length) {
-        console.log('Skipping...')
-        // console.log('Updating player stats...')
-        // await SeasonStatsController.update({
-        //   player_id: foundPlayer.id,
-        //   stats: fetchedPlayer[player.name].stats,
-        // })
-      } else {
-        await SeasonStatsController.create({
-          player_id: foundPlayer.id,
-          stats: fetchedPlayer[player.name].stats,
-        })
-      }
+    } else {
+      await SeasonStatsController.create({
+        player_id: foundPlayer.id,
+        stats: fetchedPlayer[player.name].stats,
+      })
     }
   }
 

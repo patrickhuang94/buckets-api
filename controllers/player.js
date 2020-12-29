@@ -45,7 +45,7 @@ async function create({ name, age, position, image_url, team }) {
     return
   }
 
-  if (!age || !position || !image_url || !team) {
+  if (!age || !image_url || !team) {
     console.error(`Data missing for ${name}`)
     return
   }
@@ -54,11 +54,11 @@ async function create({ name, age, position, image_url, team }) {
     where: { abbreviated_name: team },
   })
 
-  await Player.create({
-    name: player.name,
-    age: fetchedPlayer[player.name].age,
-    position: fetchedPlayer[player.name].position,
-    image_url: fetchedPlayer[player.name].image_url,
+  return await Player.create({
+    name: name,
+    age: age || '',
+    position: position || '',
+    image_url: image_url || '',
     team_id: foundTeam.id,
   })
 }
