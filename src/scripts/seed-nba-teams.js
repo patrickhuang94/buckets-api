@@ -1,4 +1,4 @@
-const Team = require('../../models/team')
+const Team = require('../models/team')
 
 async function seedTeams() {
   const teams = [
