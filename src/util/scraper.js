@@ -65,7 +65,7 @@ async function fetchPlayerStats(player) {
 
   const image_url = $('.media-item').find('img').attr('src')
 
-  $('#per_game')
+  $('#all_per_game')
     .find('tbody')
     .each((_, element) => {
       const season_player_stats = []
@@ -167,11 +167,9 @@ async function fetchPlayerStats(player) {
               points: parseFloat(points) || 0,
             })
 
-            if (season === LATEST_SEASON) {
-              primary_position = position
-              current_age = age
-              current_team = team
-            }
+            primary_position = position
+            current_age = age
+            current_team = team
           }
         })
 
@@ -190,21 +188,45 @@ async function fetchPlayerStats(player) {
 async function main() {
   console.log('Starting to scrape...')
 
-  const playerUrls = await fetchPlayersUrls({
+  const allPlayerUrls = {}
+  const playerUrls2021 = await fetchPlayersUrls({
     season: 2021,
     isRetry: false,
   })
 
-  for (const player of Object.values(playerUrls)) {
+  for (const [key, value] of Object.entries(playerUrls2021)) {
+    if (!allPlayerUrls[key]) {
+      allPlayerUrls[key] = value
+    }
+  }
+
+  const playerUrls2020 = await fetchPlayersUrls({
+    season: 2020,
+    isRetry: false,
+  })
+
+  for (const [key, value] of Object.entries(playerUrls2020)) {
+    if (!allPlayerUrls[key]) {
+      allPlayerUrls[key] = value
+    }
+  }
+
+  for (const player of Object.values(allPlayerUrls)) {
     let foundPlayer = await Player.findOne({ where: { name: player.name } })
     const fetchedPlayer = await fetchPlayerStats(player)
+
+    console.log({ fetchedPlayer })
+
+    if (!Object.keys(fetchedPlayer).length) {
+      console.error('Uh oh. The player page is probably down.')
+      continue
+    }
 
     if (foundPlayer) {
       console.log(`${foundPlayer.name} already exists`)
     } else {
       console.log(`Creating player data for ${player.name}`)
 
-      // TODO: positions for 2020-21 players are missing...
       foundPlayer = await PlayerController.create({
         name: player.name,
         age: fetchedPlayer[player.name].age,
@@ -222,17 +244,15 @@ async function main() {
       console.log('Updating player stats...')
 
       // Only update the current season's stats
-      if (!Object.keys(fetchedPlayer).length) {
-        console.error('The player pagae is probably down.')
-      } else {
-        const stats = fetchedPlayer[player.name].stats
-        const currentSeasonStats = stats[stats.length - 1]
-        await SeasonStatsController.update({
-          player_id: foundPlayer.id,
-          stats: currentSeasonStats,
-        })
-      }
+      const stats = fetchedPlayer[player.name].stats
+      const currentSeasonStats = stats[stats.length - 1]
+      await SeasonStatsController.update({
+        player_id: foundPlayer.id,
+        stats: currentSeasonStats,
+      })
     } else {
+      console.log('Creating player stats...')
+
       await SeasonStatsController.create({
         player_id: foundPlayer.id,
         stats: fetchedPlayer[player.name].stats,
