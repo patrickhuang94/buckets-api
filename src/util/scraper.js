@@ -5,8 +5,6 @@ const SeasonStats = require('../models/season_stats')
 const PlayerController = require('../controllers/player')
 const SeasonStatsController = require('../controllers/season_stats')
 
-const LATEST_SEASON = '2020-21'
-
 async function fetchPlayersUrls({ season, isRetry }) {
   const playerUrls = {}
 
@@ -263,4 +261,4 @@ async function main() {
   console.log('Done!')
 }
 
-main()
+module.exports = main
