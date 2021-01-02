@@ -1,5 +1,5 @@
 {
-  "name": "buckets-api",
+  "name": "nba-buckets",
   "version": "1.0.0",
   "description": "API providing scraped basketball-reference NBA stats",
   "main": "src/index.js",
