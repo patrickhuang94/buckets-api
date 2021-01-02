@@ -222,12 +222,16 @@ async function main() {
       console.log('Updating player stats...')
 
       // Only update the current season's stats
-      const stats = fetchedPlayer[player.name].stats
-      const currentSeasonStats = stats[stats.length - 1]
-      await SeasonStatsController.update({
-        player_id: foundPlayer.id,
-        stats: currentSeasonStats,
-      })
+      if (!Object.keys(fetchedPlayer).length) {
+        console.error('The player pagae is probably down.')
+      } else {
+        const stats = fetchedPlayer[player.name].stats
+        const currentSeasonStats = stats[stats.length - 1]
+        await SeasonStatsController.update({
+          player_id: foundPlayer.id,
+          stats: currentSeasonStats,
+        })
+      }
     } else {
       await SeasonStatsController.create({
         player_id: foundPlayer.id,
