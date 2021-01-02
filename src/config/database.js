@@ -1,13 +1,12 @@
 require('dotenv').config()
 const { Sequelize } = require('sequelize')
-const config = require('./config')
 
 module.exports = new Sequelize(
-  config[process.env.environment].database,
-  config[process.env.environment].username,
-  config[process.env.environment].password,
+  process.env.DATABASE,
+  process.env.DATABASE_USERNAME,
+  process.env.DATABASE_PASSWORD,
   {
-    host: config[process.env.environment].host,
+    host: process.env.DATABASE_HOST,
     dialect: 'mysql',
     define: { freezeTableName: true, underscored: true }, // prevent pluralizing table names
     logging: false,
