@@ -1,6 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const SeasonStats = require('../app/models/season_stats')
+const SeasonAverage = require('../app/models/season_average')
 
 async function fetchPlayersUrls({ season, isRetry }) {
   const playerUrls = {}
@@ -30,7 +30,7 @@ async function fetchPlayersUrls({ season, isRetry }) {
   if (isRetry) {
     // Network timeouts happen frequently. Use this to find the last player entry
     // and pick up where it left off.
-    const lastEntry = await SeasonStats.findOne({
+    const lastEntry = await SeasonAverage.findOne({
       order: [['id', 'DESC']],
     })
     const lastPlayer = await Player.findOne({

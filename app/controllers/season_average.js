@@ -1,5 +1,5 @@
 const { Op } = require('sequelize')
-const SeasonStats = require('../models/season_stats')
+const SeasonAverage = require('../models/season_average')
 const Player = require('../models/player')
 const Team = require('../models/team')
 
@@ -14,12 +14,12 @@ async function find({ name }) {
     return error
   }
 
-  const seasonStats = await SeasonStats.findAll({
+  const seasonAverage = await SeasonAveraage.findAll({
     where: { player_id: foundPlayer.id },
     include: Team,
   })
 
-  return seasonStats.map((stat) => ({
+  return seasonAverage.map((stat) => ({
     season: stat.season,
     games_played: stat.games_played,
     games_started: stat.games_started,
@@ -51,11 +51,11 @@ async function find({ name }) {
 }
 
 async function findByPlayerId({ player_id }) {
-  const seasonStats = await SeasonStats.findAll({
+  const seasonAverage = await SeasonAverage.findAll({
     where: { player_id },
   })
 
-  return seasonStats
+  return seasonAverage
 }
 
 async function create({ player_id, stats }) {
@@ -87,24 +87,24 @@ async function create({ player_id, stats }) {
     })
   }
 
-  await SeasonStats.bulkCreate(playerStats)
+  await SeasonAverage.bulkCreate(playerStats)
 }
 
 async function update({ player_id, stats }) {
-  const currentSeasonStats = await SeasonStats.findOne({
+  const currentSeasonAverage = await SeasonAverage.findOne({
     where: {
       season: '2020-21',
       player_id,
     },
   })
 
-  if (!currentSeasonStats) {
+  if (!currentSeasonAverage) {
     console.error('Player is not playing in current season')
     return
   }
 
-  SeasonStats.update(stats, {
-    where: { id: currentSeasonStats.id },
+  SeasonAverage.update(stats, {
+    where: { id: currentSeasonAverage.id },
   })
 }
 

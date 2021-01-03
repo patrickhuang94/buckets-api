@@ -3,8 +3,8 @@ const db = require('../../config/database')
 const Player = require('./player')
 const Team = require('./team')
 
-const SeasonStats = db.define(
-  'season_stats',
+const SeasonAverage = db.define(
+  'season_averaage',
   {
     season: DataTypes.STRING,
     games_played: DataTypes.INTEGER,
@@ -41,9 +41,9 @@ const SeasonStats = db.define(
   }
 )
 
-SeasonStats.belongsTo(Player, { name: 'player_id', field: 'player_id' })
-SeasonStats.belongsTo(Team, { name: 'team_id', field: 'team_id' })
-Player.hasMany(SeasonStats)
-Team.hasMany(SeasonStats)
+SeasonAverage.belongsTo(Player, { name: 'player_id', field: 'player_id' })
+SeasonAverage.belongsTo(Team, { name: 'team_id', field: 'team_id' })
+Player.hasMany(SeasonAverage)
+Team.hasMany(SeasonAverage)
 
-module.exports = SeasonStats
+module.exports = SeasonAverage

@@ -16,7 +16,7 @@ const port = process.env.PORT || 3001
 
 const player = require('./routes/player')
 const team = require('./routes/team')
-const seasonStats = require('./routes/season_stats')
+const seaasonAverage = require('./routes/season_average')
 
 app.use(bodyParser.json())
 app.use(cookieParser())
@@ -24,7 +24,7 @@ app.use(helmet())
 
 app.use('/player', player)
 app.use('/team', team)
-app.use('/season_stats', seasonStats)
+app.use('/season_average', seaasonAverage)
 
 db.sync().then(() => {
   http.createServer(app).listen(port, () => {

@@ -1,6 +1,6 @@
 const Player = require('../app/models/player')
 const PlayerController = require('../app/controllers/player')
-const SeasonStatsController = require('../app/controllers/season_stats')
+const SeasonAverageController = require('../app/controllers/season_average')
 const fetchPlayersUrls = require('./fetch-players-urls')
 const fetchPlayerStats = require('./fetch-player-stats')
 
@@ -53,7 +53,7 @@ async function main() {
       })
     }
 
-    const existingStats = await SeasonStatsController.findByPlayerId({
+    const existingStats = await SeasonAverageController.findByPlayerId({
       player_id: foundPlayer.id,
     })
 
@@ -62,15 +62,15 @@ async function main() {
 
       // Only update the current season's stats
       const stats = fetchedPlayer[player.name].stats
-      const currentSeasonStats = stats[stats.length - 1]
-      await SeasonStatsController.update({
+      const currentSeasonAverage = stats[stats.length - 1]
+      await SeasonAverageController.update({
         player_id: foundPlayer.id,
-        stats: currentSeasonStats,
+        stats: currentSeasonAverage,
       })
     } else {
       console.log('Creating player stats...')
 
-      await SeasonStatsController.create({
+      await SeasonAverageController.create({
         player_id: foundPlayer.id,
         stats: fetchedPlayer[player.name].stats,
       })

@@ -12,8 +12,8 @@ NBA Node API powered by basketball-reference. Contains 2019-2020 players and act
 
 `/GET https://nba-buckets.herokuapp.com/player?name=<player_name>`
 
-## Season stats
+## Season average
 
 #### Fetch season stats for player
 
-`/GET https://nba-buckets.herokuapp.com/season_stats?name=<player_name>`
+`/GET https://nba-buckets.herokuapp.com/season_average?name=<player_name>`
