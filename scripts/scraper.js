@@ -1,9 +1,9 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const Player = require('../models/player')
-const SeasonStats = require('../models/season_stats')
-const PlayerController = require('../controllers/player')
-const SeasonStatsController = require('../controllers/season_stats')
+const Player = require('../app/models/player')
+const SeasonStats = require('../app/models/season_stats')
+const PlayerController = require('../app/controllers/player')
+const SeasonStatsController = require('../app/controllers/season_stats')
 
 async function fetchPlayersUrls({ season, isRetry }) {
   const playerUrls = {}

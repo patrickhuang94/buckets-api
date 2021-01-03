@@ -4,8 +4,8 @@ const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const http = require('http')
-const db = require('./config/database')
-const job = require('./cron')
+const db = require('../config/database')
+const cron = require('./cron')
 
 db.authenticate()
   .then(() => console.log('Database connected'))
@@ -32,6 +32,6 @@ db.sync().then(() => {
   })
 })
 
-job.start()
+cron.start()
 
 module.exports = app
