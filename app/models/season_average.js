@@ -4,7 +4,7 @@ const Player = require('./player')
 const Team = require('./team')
 
 const SeasonAverage = db.define(
-  'season_averaage',
+  'season_average',
   {
     season: DataTypes.STRING,
     games_played: DataTypes.INTEGER,
