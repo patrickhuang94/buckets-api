@@ -14,7 +14,7 @@ async function find({ name }) {
     return error
   }
 
-  const seasonAverage = await SeasonAveraage.findAll({
+  const seasonAverage = await SeasonAverage.findAll({
     where: { player_id: foundPlayer.id },
     include: Team,
   })
