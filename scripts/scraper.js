@@ -105,8 +105,8 @@ async function roster() {
 async function main() {
   console.log('Starting to scrape...')
 
-  players()
-  roster()
+  await players()
+  await roster()
 
   console.log('Done!')
 }
