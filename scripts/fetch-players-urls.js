@@ -1,6 +1,7 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
 const SeasonAverage = require('../app/models/season_average')
+const Player = require('../app/models/player')
 
 async function fetchPlayersUrls({ season, isRetry }) {
   const playerUrls = {}
