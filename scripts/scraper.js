@@ -1,12 +1,13 @@
 const Player = require('../app/models/player')
 const PlayerController = require('../app/controllers/player')
 const SeasonAverageController = require('../app/controllers/season_average')
+const TeamController = require('../app/controllers/team')
+const TeamRosterController = require('../app/controllers/team_roster')
 const fetchPlayersUrls = require('./fetch-players-urls')
 const fetchPlayerStats = require('./fetch-player-stats')
+const fetchRoster = require('./fetch-roster')
 
-async function main() {
-  console.log('Starting to scrape...')
-
+async function players() {
   const allPlayerUrls = {}
   const playerUrls2021 = await fetchPlayersUrls({
     season: 2021,
@@ -76,6 +77,36 @@ async function main() {
       })
     }
   }
+}
+
+async function roster() {
+  const allTeams = await TeamController.findAll()
+
+  for (const team of allTeams) {
+    const teamAbbreviation = team.abbreviated_name
+    const rosteredPlayers = await fetchRoster({
+      team: teamAbbreviation,
+      season: 2021,
+    })
+    const { win, loss, coach, players } = rosteredPlayers[teamAbbreviation]
+    for (const player of players) {
+      await TeamRosterController.create({
+        season: '2020-21',
+        team_abbreviation: teamAbbreviation,
+        player,
+        coach,
+        win,
+        loss,
+      })
+    }
+  }
+}
+
+async function main() {
+  console.log('Starting to scrape...')
+
+  players()
+  roster()
 
   console.log('Done!')
 }

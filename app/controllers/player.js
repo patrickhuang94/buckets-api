@@ -13,6 +13,7 @@ async function find({ name }) {
   })
 
   return players.map((player) => ({
+    id: player.id,
     name: player.name,
     position: player.position,
     image_url: player.image_url,

@@ -1,4 +1,17 @@
+const { Op } = require('sequelize')
 const Team = require('../models/team')
+
+async function find({ abbreviated_name }) {
+  const team = await Team.findOne({
+    where: {
+      abbreviated_name: {
+        [Op.like]: `%${abbreviated_name}%`,
+      },
+    },
+  })
+
+  return team
+}
 
 async function findAll() {
   const teams = await Team.findAll()
@@ -21,5 +34,6 @@ async function findAll() {
 }
 
 module.exports = {
+  find,
   findAll,
 }
