@@ -3,7 +3,7 @@ const SeasonAverage = require('../models/season_average')
 const Player = require('../models/player')
 const Team = require('../models/team')
 
-async function find({ name }) {
+async function find({ name, season }) {
   const foundPlayer = await Player.findOne({
     where: { name },
   })
@@ -14,11 +14,11 @@ async function find({ name }) {
     return error
   }
 
-  const seasonAverage = await SeasonAverage.findAll({
-    where: { player_id: foundPlayer.id },
-    include: Team,
-  })
+  const params = season
+    ? { where: { player_id: foundPlayer.id, season }, include: Team }
+    : { where: { player_id: foundPlayer.id }, include: Team }
 
+  const seasonAverage = await SeasonAverage.findAll(params)
   return seasonAverage.map((stat) => ({
     season: stat.season,
     games_played: stat.games_played,
