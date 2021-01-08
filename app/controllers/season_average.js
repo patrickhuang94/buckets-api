@@ -9,9 +9,7 @@ async function find({ name, season }) {
   })
 
   if (!foundPlayer) {
-    const error = `Stats for ${name} could not be found.`
-    console.error(error)
-    return error
+    throw new Error(`Stats for ${name} could not be found.`)
   }
 
   const params = season

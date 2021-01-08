@@ -12,6 +12,10 @@ async function find({ name }) {
     include: Team,
   })
 
+  if (!players.length) {
+    throw new Error(`Cannot find players with name ${name}.`)
+  }
+
   return players.map((player) => ({
     id: player.id,
     name: player.name,
