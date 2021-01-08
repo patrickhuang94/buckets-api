@@ -1,6 +1,33 @@
+const Sequelize = require('sequelize')
 const TeamRoster = require('../models/team_roster')
 const PlayerController = require('../controllers/player')
 const TeamController = require('../controllers/team')
+const Team = require('../models/team')
+const Player = require('../models/player')
+
+async function find({ name }) {
+  const foundTeam = await TeamController.find({ abbreviated_name: name })
+  if (!foundTeam) {
+    throw new Error(`Cannot find team name ${name}.`)
+  }
+
+  const teamRoster = await TeamRoster.findAll({
+    include: [
+      { model: Player },
+      {
+        model: Team,
+        where: { abbreviated_name: name },
+      },
+    ],
+  })
+
+  return {
+    coach: teamRoster[0].coach,
+    win: teamRoster[0].win,
+    loss: teamRoster[0].loss,
+    players: teamRoster.map((tr) => tr.player.name),
+  }
+}
 
 async function create({ season, team_abbreviation, player, coach, win, loss }) {
   if (!player) {
@@ -40,5 +67,6 @@ async function create({ season, team_abbreviation, player, coach, win, loss }) {
 }
 
 module.exports = {
+  find,
   create,
 }
