@@ -10,6 +10,10 @@ async function find({ abbreviated_name }) {
     },
   })
 
+  if (!team) {
+    throw new Error(`Cannot find team ${abbreviated_name}`)
+  }
+
   return team
 }
 
