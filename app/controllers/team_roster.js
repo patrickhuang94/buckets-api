@@ -1,4 +1,3 @@
-const Sequelize = require('sequelize')
 const TeamRoster = require('../models/team_roster')
 const PlayerController = require('../controllers/player')
 const TeamController = require('../controllers/team')
