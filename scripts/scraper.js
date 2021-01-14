@@ -111,4 +111,4 @@ async function main() {
   console.log('Done!')
 }
 
-module.exports = main
+main()
