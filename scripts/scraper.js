@@ -32,50 +32,60 @@ async function players() {
   }
 
   for (const player of Object.values(allPlayerUrls)) {
-    let foundPlayer = await Player.findOne({ where: { name: player.name } })
-    const fetchedPlayer = await fetchPlayerStats(player)
+    await createOrUpdatePlayerStats(player)
+  }
+}
 
-    if (!Object.keys(fetchedPlayer).length) {
-      console.error('Uh oh. The player page is probably down.')
-      continue
-    }
+async function createOrUpdatePlayerStats(player) {
+  let foundPlayer = await Player.findOne({ where: { name: player.name } })
+  const fetchedPlayer = await fetchPlayerStats(player)
 
-    if (foundPlayer) {
-      console.log(`${foundPlayer.name} already exists`)
-    } else {
-      console.log(`Creating player data for ${player.name}`)
+  if (!Object.keys(fetchedPlayer).length) {
+    console.error('Uh oh. The player page is probably down.')
+    return
+  }
 
-      foundPlayer = await PlayerController.create({
-        name: player.name,
-        age: fetchedPlayer[player.name].age,
-        position: fetchedPlayer[player.name].position,
-        image_url: fetchedPlayer[player.name].image_url,
-        team: fetchedPlayer[player.name].current_team,
-      })
-    }
+  if (foundPlayer) {
+    console.log(`${foundPlayer.name} already exists.`)
+  } else {
+    console.log(`Creating player data for ${player.name}.`)
 
-    const existingStats = await SeasonAverageController.findByPlayerId({
-      player_id: foundPlayer.id,
+    foundPlayer = await PlayerController.create({
+      name: player.name,
+      age: fetchedPlayer[player.name].age,
+      position: fetchedPlayer[player.name].position,
+      image_url: fetchedPlayer[player.name].image_url,
+      team: fetchedPlayer[player.name].current_team,
     })
 
-    if (existingStats.length) {
-      console.log('Updating player stats...')
+    console.log('Player created.')
+  }
 
-      // Only update the current season's stats
-      const stats = fetchedPlayer[player.name].stats
-      const currentSeasonAverage = stats[stats.length - 1]
-      await SeasonAverageController.update({
-        player_id: foundPlayer.id,
-        stats: currentSeasonAverage,
-      })
-    } else {
-      console.log('Creating player stats...')
+  const existingStats = await SeasonAverageController.findByPlayerId({
+    player_id: foundPlayer.id,
+  })
 
-      await SeasonAverageController.create({
-        player_id: foundPlayer.id,
-        stats: fetchedPlayer[player.name].stats,
-      })
-    }
+  if (existingStats.length) {
+    console.log('Updating player stats...')
+
+    // Only update the current season's stats
+    const stats = fetchedPlayer[player.name].stats
+    const currentSeasonAverage = stats[stats.length - 1]
+    await SeasonAverageController.update({
+      player_id: foundPlayer.id,
+      stats: currentSeasonAverage,
+    })
+
+    console.log('Player stats updated.')
+  } else {
+    console.log('Creating player stats...')
+
+    await SeasonAverageController.create({
+      player_id: foundPlayer.id,
+      stats: fetchedPlayer[player.name].stats,
+    })
+
+    console.log('Player stats created.')
   }
 }
 
