@@ -28,6 +28,13 @@ async function find({ name }) {
   }
 }
 
+async function deleteAll() {
+  return await TeamRoster.destroy({
+    where: {},
+    truncate: true,
+  })
+}
+
 async function create({ season, team_abbreviation, player, coach, win, loss }) {
   if (!player) {
     console.error('Missing player name!')
@@ -43,16 +50,6 @@ async function create({ season, team_abbreviation, player, coach, win, loss }) {
   const foundTeam = await TeamController.find({
     abbreviated_name: team_abbreviation,
   })
-  const foundRosterPlayer = await TeamRoster.findOne({
-    where: { player_id: foundPlayer[0].id },
-  })
-
-  if (foundRosterPlayer) {
-    console.log(
-      `${foundPlayer[0].name} is already listed on ${foundTeam.name}.`
-    )
-    return
-  }
 
   console.log(`Creating ${foundPlayer[0].name} on ${foundTeam.name}...`)
   return await TeamRoster.create({
@@ -67,5 +64,6 @@ async function create({ season, team_abbreviation, player, coach, win, loss }) {
 
 module.exports = {
   find,
+  deleteAll,
   create,
 }

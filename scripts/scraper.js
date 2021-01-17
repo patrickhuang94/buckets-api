@@ -60,8 +60,12 @@ async function createOrUpdatePlayerStats(player) {
 }
 
 async function roster() {
-  const allTeams = await TeamController.findAll()
+  // since teams make trades and update team roster a lot, just
+  // delete all records and recreate them
+  console.log('Deleting team rosters...')
+  await TeamRosterController.deleteAll()
 
+  const allTeams = await TeamController.findAll()
   for (const team of allTeams) {
     const teamAbbreviation = team.abbreviated_name
     const rosteredPlayers = await fetchRoster({
