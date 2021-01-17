@@ -48,67 +48,50 @@ async function find({ name, season }) {
   }))
 }
 
-async function findByPlayerId({ player_id }) {
-  const seasonAverage = await SeasonAverage.findAll({
+async function upsert({ player_id, stats }) {
+  const existingStats = await SeasonAverage.findAll({
     where: { player_id },
+    raw: true,
   })
 
-  return seasonAverage
-}
+  if (existingStats.length) {
+    console.log('Updating player stats...')
 
-async function create({ player_id, stats }) {
-  if (!player_id) {
-    console.error('Missing player ID!')
-    return
-  }
-
-  if (!stats.length) {
-    console.error('Missing stats!')
-    return
-  }
-
-  const playerStats = []
-  for (const stat of stats) {
-    const team = await Team.findOne({
-      where: {
-        [Op.or]: [
-          { abbreviated_name: stat.team },
-          { alternate_abbreviated_name: stat.team },
-        ],
-      },
+    // Only update the current season's stats
+    const currentSeasonAverage = stats[stats.length - 1]
+    await SeasonAverage.update(currentSeasonAverage, {
+      where: { player_id },
     })
 
-    playerStats.push({
-      ...stat,
-      player_id,
-      team_id: team ? team.id : null, // no teams available for 'TOT'
-    })
+    console.log('Player stats updated.')
+  } else {
+    console.log('Creating player stats...')
+
+    const playerStats = []
+    for (const stat of stats) {
+      const team = await Team.findOne({
+        where: {
+          [Op.or]: [
+            { abbreviated_name: stat.team },
+            { alternate_abbreviated_name: stat.team },
+          ],
+        },
+      })
+
+      playerStats.push({
+        ...stat,
+        player_id,
+        team_id: team ? team.id : null, // no teams available for 'TOT'
+      })
+    }
+
+    await SeasonAverage.bulkCreate(playerStats)
+
+    console.log('Player stats created.')
   }
-
-  await SeasonAverage.bulkCreate(playerStats)
-}
-
-async function update({ player_id, stats }) {
-  const currentSeasonAverage = await SeasonAverage.findOne({
-    where: {
-      season: '2020-21',
-      player_id,
-    },
-  })
-
-  if (!currentSeasonAverage) {
-    console.error('Player is not playing in current season')
-    return
-  }
-
-  SeasonAverage.update(stats, {
-    where: { id: currentSeasonAverage.id },
-  })
 }
 
 module.exports = {
   find,
-  findByPlayerId,
-  create,
-  update,
+  upsert,
 }

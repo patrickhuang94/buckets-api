@@ -44,32 +44,27 @@ async function findAll() {
   }))
 }
 
-async function create({ name, age, position, image_url, team }) {
-  if (!name) {
-    console.error('Missing player name!')
-    return
-  }
-
-  if (!age || !image_url || !team) {
-    console.error(`Data missing for ${name}`)
-    return
-  }
-
+async function findOrCreate({ name, age, position, image_url, team }) {
   const foundTeam = await Team.findOne({
     where: { abbreviated_name: team },
   })
 
-  return await Player.create({
-    name: name,
-    age: age || '',
-    position: position || '',
-    image_url: image_url || '',
-    team_id: foundTeam.id,
+  const player = await Player.findOrCreate({
+    where: { name },
+    defaults: {
+      age,
+      position,
+      image_url,
+      team_id: foundTeam.id,
+    },
+    raw: true,
   })
+
+  return player[0]
 }
 
 module.exports = {
   find,
   findAll,
-  create,
+  findOrCreate,
 }
