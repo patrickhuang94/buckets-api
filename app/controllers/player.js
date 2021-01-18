@@ -13,7 +13,8 @@ async function find({ name }) {
   })
 
   if (!players.length) {
-    throw new Error(`Cannot find players with name ${name}.`)
+    console.log(`Cannot find players with name ${name}.`)
+    return []
   }
 
   return players.map((player) => ({
@@ -23,6 +24,7 @@ async function find({ name }) {
     image_url: player.image_url,
     age: player.age,
     team: {
+      id: player.team.id,
       full_name: player.team.name,
       short_name: player.team.abbreviated_name,
     },

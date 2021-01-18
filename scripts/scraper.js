@@ -2,9 +2,12 @@ const PlayerController = require('../app/controllers/player')
 const SeasonAverageController = require('../app/controllers/season_average')
 const TeamController = require('../app/controllers/team')
 const TeamRosterController = require('../app/controllers/team_roster')
+const InjuryReportController = require('../app/controllers/injury_report')
+
 const fetchPlayersUrls = require('./fetch-players-urls')
 const fetchPlayerStats = require('./fetch-player-stats')
 const fetchRoster = require('./fetch-roster')
+const fetchInjuryReport = require('./fetch-injury-report')
 
 async function players() {
   const allPlayerUrls = {}
@@ -60,8 +63,8 @@ async function createOrUpdatePlayerStats(player) {
 }
 
 async function roster() {
-  // since teams make trades and update team roster a lot, just
-  // delete all records and recreate them
+  // since teams make trades and update team roster often, it's easier
+  // to just delete all records and recreate them
   console.log('Deleting team rosters...')
   await TeamRosterController.deleteAll()
 
@@ -86,11 +89,28 @@ async function roster() {
   }
 }
 
+async function injuryReports() {
+  // delete all records and recreate them since injury
+  // reports are updated pretty frequently
+  await InjuryReportController.deleteAll()
+  const injuryList = await fetchInjuryReport()
+
+  for (const injury of injuryList) {
+    console.log({ injury })
+    await InjuryReportController.create({
+      player_name: injury.name,
+      description: injury.description,
+      date: injury.date,
+    })
+  }
+}
+
 async function main() {
   console.log('Starting to scrape...')
 
   await players()
   await roster()
+  await injuryReports()
 
   console.log('Done!')
 }
