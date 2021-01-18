@@ -60,7 +60,7 @@ async function upsert({ player_id, stats }) {
     // Only update the current season's stats
     const currentSeasonAverage = stats[stats.length - 1]
     await SeasonAverage.update(currentSeasonAverage, {
-      where: { player_id },
+      where: { player_id, season: '2020-21' },
     })
 
     console.log('Player stats updated.')

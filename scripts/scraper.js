@@ -96,7 +96,6 @@ async function injuryReports() {
   const injuryList = await fetchInjuryReport()
 
   for (const injury of injuryList) {
-    console.log({ injury })
     await InjuryReportController.create({
       player_name: injury.name,
       description: injury.description,
