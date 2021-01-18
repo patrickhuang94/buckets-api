@@ -1,5 +1,41 @@
-const InjuryReport = require('../models/injury_report')
 const PlayerController = require('../controllers/player')
+const InjuryReport = require('../models/injury_report')
+const Player = require('../models/player')
+const Team = require('../models/team')
+
+async function findAll() {
+  const reports = await InjuryReport.findAll({
+    include: [{ model: Player }, { model: Team }],
+  })
+
+  return reports.map((report) => ({
+    date: report.date,
+    description: report.description,
+    player: report.player.name,
+    team: {
+      short_name: report.team.abbreviated_name,
+      full_name: report.team.name,
+    },
+  }))
+}
+
+async function find({ team }) {
+  const reports = await InjuryReport.findAll({
+    include: [{ model: Player }, { model: Team }],
+  })
+
+  return reports
+    .filter((report) => report.team.abbreviated_name === team)
+    .map((report) => ({
+      date: report.date,
+      description: report.description,
+      player: report.player.name,
+      team: {
+        short_name: report.team.abbreviated_name,
+        full_name: report.team.name,
+      },
+    }))
+}
 
 async function deleteAll() {
   return await InjuryReport.destroy({
@@ -24,6 +60,8 @@ async function create({ player_name, description, date }) {
 }
 
 module.exports = {
+  find,
+  findAll,
   deleteAll,
   create,
 }

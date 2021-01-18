@@ -17,6 +17,7 @@ const player = require('./routes/player')
 const team = require('./routes/team')
 const seaasonAverage = require('./routes/season_average')
 const teamRoster = require('./routes/team_roster')
+const injuryReport = require('./routes/injury_report')
 
 app.use(bodyParser.json())
 app.use(cookieParser())
@@ -26,6 +27,7 @@ app.use('/player', player)
 app.use('/team', team)
 app.use('/season_average', seaasonAverage)
 app.use('/team_roster', teamRoster)
+app.use('/injury_report', injuryReport)
 
 db.sync().then(() => {
   http.createServer(app).listen(port, () => {
