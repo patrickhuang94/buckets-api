@@ -17,3 +17,13 @@ NBA Node API powered by basketball-reference. Contains 2019-2020 players and act
 #### Fetch season stats for player
 
 `/GET https://nba-buckets.herokuapp.com/season_average?name=<player_name>`
+
+## Injury report
+
+#### Fetch all injuries
+
+`/GET https://nba-buckets.herokuapp.com/injury_report`
+
+#### Fetch injuries for a team
+
+`/GET https://nba-buckets.herokuapp.com/injury_report?team=<team_name>`
