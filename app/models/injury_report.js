@@ -7,7 +7,7 @@ const InjuryReport = db.define(
   'injury_report',
   {
     description: DataTypes.STRING,
-    date_reported: DataTypes.DATE,
+    date_reported: DataTypes.DATEONLY,
     player_id: DataTypes.INTEGER,
     team_id: DataTypes.INTEGER,
   },
