@@ -9,7 +9,7 @@ async function findAll() {
   })
 
   return reports.map((report) => ({
-    date: report.date,
+    date_reported: report.date_reported,
     description: report.description,
     player: report.player.name,
     team: {
@@ -27,7 +27,7 @@ async function find({ team }) {
   return reports
     .filter((report) => report.team.abbreviated_name === team)
     .map((report) => ({
-      date: report.date,
+      date_reported: report.date_reported,
       description: report.description,
       player: report.player.name,
       team: {
