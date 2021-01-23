@@ -44,7 +44,7 @@ async function deleteAll() {
   })
 }
 
-async function create({ player_name, description, date }) {
+async function create({ player_name, description, date_reported }) {
   const foundPlayer = await PlayerController.find({ name: player_name })
   if (!foundPlayer.length) {
     console.log('This player probably is not important anyway. Skip!')
@@ -54,7 +54,7 @@ async function create({ player_name, description, date }) {
   return await InjuryReport.create({
     player_id: foundPlayer[0].id,
     team_id: foundPlayer[0].team.id,
-    date,
+    date_reported,
     description,
   })
 }

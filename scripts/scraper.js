@@ -99,7 +99,7 @@ async function injuryReports() {
     await InjuryReportController.create({
       player_name: injury.name,
       description: injury.description,
-      date: injury.date,
+      date_reported: injury.date,
     })
   }
 }
