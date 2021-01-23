@@ -1,17 +1,28 @@
 const { Op } = require('sequelize')
 const Team = require('../models/team')
 
-async function find({ abbreviated_name }) {
+async function find({ abbreviated_name, name }) {
   const team = await Team.findOne({
     where: {
-      abbreviated_name: {
-        [Op.like]: `%${abbreviated_name}%`,
-      },
+      [Op.or]: [
+        {
+          abbreviated_name: {
+            [Op.like]: `%${abbreviated_name}%`,
+          },
+        },
+        {
+          name: {
+            [Op.like]: `%${name}%`,
+          },
+        },
+      ],
     },
   })
 
   if (!team) {
-    throw new Error(`Cannot find team ${abbreviated_name}`)
+    throw new Error(
+      `Cannot find abbreviated team ${abbreviated_name} or team ${name}`
+    )
   }
 
   return team
