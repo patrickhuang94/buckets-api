@@ -24,12 +24,12 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(helmet())
 
-app.use('/player', player)
-app.use('/team', team)
-app.use('/season_average', seaasonAverage)
-app.use('/team_roster', teamRoster)
-app.use('/injury_report', injuryReport)
-app.use('/schedule', schedule)
+app.use('/api/v1/player', player)
+app.use('/api/v1/team', team)
+app.use('/api/v1/season_average', seaasonAverage)
+app.use('/api/v1/team_roster', teamRoster)
+app.use('/api/v1/injury_report', injuryReport)
+app.use('/api/v1/schedule', schedule)
 
 db.sync().then(() => {
   http.createServer(app).listen(port, () => {
