@@ -24,6 +24,7 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(helmet())
 
+app.use(express.static('public'))
 app.use('/api/v1/player', player)
 app.use('/api/v1/team', team)
 app.use('/api/v1/season_average', seaasonAverage)
