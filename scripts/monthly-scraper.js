@@ -1,21 +1,6 @@
 const ScheduleController = require('../app/controllers/schedule')
-
 const fetchSchedule = require('./fetch-schedule')
-
-const months = {
-  0: 'january',
-  1: 'february',
-  2: 'march',
-  3: 'april',
-  4: 'may',
-  5: 'june',
-  6: 'july',
-  7: 'august',
-  8: 'september',
-  9: 'october',
-  10: 'november',
-  11: 'december',
-}
+const { indexToMonth } = require('../util/months')
 
 async function schedules({ month }) {
   const teamSchedules = await fetchSchedule({ month })
@@ -40,7 +25,7 @@ async function main() {
   if (currentDate === 1) {
     console.log('Starting to scrape...')
 
-    await schedules({ month: months[currentMonth] })
+    await schedules({ month: indexToMonth[currentMonth] })
 
     console.log('Done!')
   }
