@@ -16,7 +16,15 @@ const Schedule = db.define(
   }
 )
 
-Schedule.belongsTo(Team, { name: 'home_team_id', field: 'team_id' })
-Schedule.belongsTo(Team, { name: 'visitor_team_id', field: 'team_id' })
+Schedule.belongsTo(Team, {
+  targetKey: 'id',
+  foreignKey: 'home_team_id',
+  as: 'home_team',
+})
+Schedule.belongsTo(Team, {
+  targetKey: 'id',
+  foreignKey: 'visitor_team_id',
+  as: 'visitor_team',
+})
 
 module.exports = Schedule
