@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>NBA Buckets</title>
+    <title>Triple Double</title>
 
     <style media="screen">
       .highlight table td { padding: 5px; }
@@ -296,7 +296,7 @@
       </span>
     </a>
     <div class="toc-wrapper">
-      <img src="images/logo-1e815a84.png" class="logo" alt="" />
+      <img src="images/logo-8ce0d95a.png" class="logo" alt="" />
         <div class="lang-selector">
               <a href="#" data-language-name="shell">shell</a>
         </div>
@@ -306,16 +306,21 @@
         <ul class="search-results"></ul>
       <ul id="toc" class="toc-list-h1">
           <li>
-            <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+            <a href="#overview" class="toc-h1 toc-link" data-title="Overview">Overview</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#considerations" class="toc-h2 toc-link" data-title="Considerations">Considerations</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#player" class="toc-h1 toc-link" data-title="Player">Player</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#fetch-all" class="toc-h2 toc-link" data-title="Fetch all">Fetch all</a>
+                    <a href="#fetch-all-players" class="toc-h2 toc-link" data-title="Fetch all players">Fetch all players</a>
                   </li>
                   <li>
-                    <a href="#fetch-by-player-name" class="toc-h2 toc-link" data-title="Fetch by player name">Fetch by player name</a>
+                    <a href="#fetch-player-by-name" class="toc-h2 toc-link" data-title="Fetch player by name">Fetch player by name</a>
                   </li>
               </ul>
           </li>
@@ -323,7 +328,7 @@
             <a href="#season-average" class="toc-h1 toc-link" data-title="Season Average">Season Average</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#fetch-by-player-name-2" class="toc-h2 toc-link" data-title="Fetch by player name">Fetch by player name</a>
+                    <a href="#fetch-season-average-by-player" class="toc-h2 toc-link" data-title="Fetch season average by player">Fetch season average by player</a>
                   </li>
               </ul>
           </li>
@@ -331,10 +336,10 @@
             <a href="#injury-report" class="toc-h1 toc-link" data-title="Injury Report">Injury Report</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#fetch-all-2" class="toc-h2 toc-link" data-title="Fetch all">Fetch all</a>
+                    <a href="#fetch-all-injury-reports" class="toc-h2 toc-link" data-title="Fetch all injury reports">Fetch all injury reports</a>
                   </li>
                   <li>
-                    <a href="#fetch-by-team-name" class="toc-h2 toc-link" data-title="Fetch by team name">Fetch by team name</a>
+                    <a href="#fetch-injury-report-by-team" class="toc-h2 toc-link" data-title="Fetch injury report by team">Fetch injury report by team</a>
                   </li>
               </ul>
           </li>
@@ -342,13 +347,13 @@
             <a href="#schedule" class="toc-h1 toc-link" data-title="Schedule">Schedule</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#fetch-all-3" class="toc-h2 toc-link" data-title="Fetch all">Fetch all</a>
+                    <a href="#fetch-all-schedules" class="toc-h2 toc-link" data-title="Fetch all schedules">Fetch all schedules</a>
                   </li>
                   <li>
-                    <a href="#fetch-by-month" class="toc-h2 toc-link" data-title="Fetch by month">Fetch by month</a>
+                    <a href="#fetch-schedules-by-month" class="toc-h2 toc-link" data-title="Fetch schedules by month">Fetch schedules by month</a>
                   </li>
                   <li>
-                    <a href="#fetch-by-team-name-2" class="toc-h2 toc-link" data-title="Fetch by team name">Fetch by team name</a>
+                    <a href="#fetch-schedules-by-team" class="toc-h2 toc-link" data-title="Fetch schedules by team">Fetch schedules by team</a>
                   </li>
               </ul>
           </li>
@@ -360,15 +365,27 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id='introduction'>Introduction</h1>
-<p>Welcome to nba-buckets!</p>
+        <h1 id='overview'>Overview</h1>
+<blockquote>
+<p>API Endpoint</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>https://tripledouble.herokuapp.com/api/v1/
+</code></pre></div>
+<p>Welcome to tripledouble!</p>
 
 <p>You can use the free API to fetch season stats, player info, team rosters, injury reports, and scheduled games. No emails, sign-ups, or authentication required.</p>
 
-<p>Season stats and injury reports are updated daily. Data only contains active players starting from the 2019-2020 season.</p>
-<h1 id='player'>Player</h1><h2 id='fetch-all'>Fetch all</h2>
+<p>Source code can be found <a href="https://github.com/patrickhuang94/tripledouble">here</a>. Feel free to open any PRs should you see any missing features that you want to add.</p>
+<h2 id='considerations'>Considerations</h2>
+<ul>
+<li>Season stats and injury reports are updated daily at 2:00am PST</li>
+<li>Scheduled games are updated on the first day of every month at 2:00am PST</li>
+<li>Dataset only includes active players starting from the 2019-2020 season</li>
+<li>API is rate limited to 3600 queries per hour</li>
+</ul>
+<h1 id='player'>Player</h1><h2 id='fetch-all-players'>Fetch all players</h2>
 <p>Fetch all players, starting from the 2019-2020 regular season.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://nba-buckets.herokuapp.com/api/v1/player"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://tripledouble.herokuapp.com/api/v1/player
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -397,12 +414,12 @@
   </span><span class="err">...</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div><h3 id='http-request'>HTTP Request</h3>
-<p><code>GET https://nba-buckets.herokuapp.com/api/v1/player</code></p>
-<h2 id='fetch-by-player-name'>Fetch by player name</h2>
+<p><code>GET https://tripledouble.herokuapp.com/api/v1/player</code></p>
+<h2 id='fetch-player-by-name'>Fetch player by name</h2>
 <p>Fetch player or players that match the query name.</p>
 
 <p>To properly escape a player name, use <code>+</code> (e.g. <code>?name=lebron+james</code>)</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://nba-buckets.herokuapp.com/api/v1/player?name=antetokounmpo"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://tripledouble.herokuapp.com/api/v1/player?name<span class="o">=</span>antetokounmpo
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -446,7 +463,7 @@
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div><h3 id='http-request-2'>HTTP Request</h3>
-<p><code>GET https://nba-buckets.herokuapp.com/api/v1/player?name=&lt;player_name&gt;</code></p>
+<p><code>GET https://tripledouble.herokuapp.com/api/v1/player?name=&lt;player_name&gt;</code></p>
 <h3 id='query-parameters'>Query Parameters</h3>
 <table><thead>
 <tr>
@@ -461,9 +478,9 @@
 <td>First and/or last name of player(s) to fetch</td>
 </tr>
 </tbody></table>
-<h1 id='season-average'>Season Average</h1><h2 id='fetch-by-player-name-2'>Fetch by player name</h2>
+<h1 id='season-average'>Season Average</h1><h2 id='fetch-season-average-by-player'>Fetch season average by player</h2>
 <p>Fetch a single player&#39;s season average stats.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://nba-buckets.herokuapp.com/api/v1/season_stats?name=ben+simmons"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://tripledouble.herokuapp.com/api/v1/season_stats?name<span class="o">=</span>ben+simmons
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -501,7 +518,7 @@
   </span><span class="err">...</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div><h3 id='http-request-3'>HTTP Request</h3>
-<p><code>GET https://nba-buckets.herokuapp.com/api/v1/season_average?name=&lt;player_name&gt;</code></p>
+<p><code>GET https://tripledouble.herokuapp.com/api/v1/season_average?name=&lt;player_name&gt;</code></p>
 
 <p>To properly escape a player name, use <code>+</code> (e.g. <code>?name=ben+simmons</code>)</p>
 <h3 id='query-parameters-2'>Query Parameters</h3>
@@ -518,9 +535,9 @@
 <td>Full name of player</td>
 </tr>
 </tbody></table>
-<h1 id='injury-report'>Injury Report</h1><h2 id='fetch-all-2'>Fetch all</h2>
+<h1 id='injury-report'>Injury Report</h1><h2 id='fetch-all-injury-reports'>Fetch all injury reports</h2>
 <p>Fetch all injury reports for all teams.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://nba-buckets.herokuapp.com/api/v1/injury_report"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://tripledouble.herokuapp.com/api/v1/injury_report
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -547,10 +564,10 @@
   </span><span class="err">...</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div><h3 id='http-request-4'>HTTP Request</h3>
-<p><code>GET https://nba-buckets.herokuapp.com/api/v1/injury_report</code></p>
-<h2 id='fetch-by-team-name'>Fetch by team name</h2>
+<p><code>GET https://tripledouble.herokuapp.com/api/v1/injury_report</code></p>
+<h2 id='fetch-injury-report-by-team'>Fetch injury report by team</h2>
 <p>Fetch injury reports by abbreviated team name.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://nba-buckets.herokuapp.com/api/v1/injury_report?team=DAL"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://tripledouble.herokuapp.com/api/v1/injury_report?team<span class="o">=</span>DAL
 </code></pre></div><div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
     </span><span class="nl">"date_reported"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-01-22"</span><span class="p">,</span><span class="w">
@@ -571,7 +588,7 @@
     </span><span class="p">}</span><span class="w">
   </span><span class="p">},</span><span class="w">
 </span></code></pre></div><h3 id='http-request-5'>HTTP Request</h3>
-<p><code>GET https://nba-buckets.herokuapp.com/api/v1/injury_report?team=&lt;team_name&gt;</code></p>
+<p><code>GET https://tripledouble.herokuapp.com/api/v1/injury_report?team=&lt;team_name&gt;</code></p>
 <h3 id='query-parameters-3'>Query Parameters</h3>
 <table><thead>
 <tr>
@@ -586,9 +603,9 @@
 <td>Abbreviated name of team to fetch</td>
 </tr>
 </tbody></table>
-<h1 id='schedule'>Schedule</h1><h2 id='fetch-all-3'>Fetch all</h2>
+<h1 id='schedule'>Schedule</h1><h2 id='fetch-all-schedules'>Fetch all schedules</h2>
 <p>Fetch all scheduled games for the season.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://nba-buckets.herokuapp.com/api/v1/schedule"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://tripledouble.herokuapp.com/api/v1/schedule
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -621,10 +638,10 @@
   </span><span class="err">...</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div><h3 id='http-request-6'>HTTP Request</h3>
-<p><code>GET https://nba-buckets.herokuapp.com/api/v1/schedule</code></p>
-<h2 id='fetch-by-month'>Fetch by month</h2>
+<p><code>GET https://tripledouble.herokuapp.com/api/v1/schedule</code></p>
+<h2 id='fetch-schedules-by-month'>Fetch schedules by month</h2>
 <p>Fetch all scheduled games for the specified month.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://nba-buckets.herokuapp.com/api/v1/schedule?month=january"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://tripledouble.herokuapp.com/api/v1/schedule?month<span class="o">=</span>january
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -657,7 +674,7 @@
   </span><span class="err">...</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div><h3 id='http-request-7'>HTTP Request</h3>
-<p><code>GET https://nba-buckets.herokuapp.com/api/v1/schedule?month=&lt;month&gt;</code></p>
+<p><code>GET https://tripledouble.herokuapp.com/api/v1/schedule?month=&lt;month&gt;</code></p>
 <h3 id='query-parameters-4'>Query Parameters</h3>
 <table><thead>
 <tr>
@@ -672,180 +689,8 @@
 <td>Full month name</td>
 </tr>
 </tbody></table>
-<h2 id='fetch-by-team-name-2'>Fetch by team name</h2>
+<h2 id='fetch-schedules-by-team'>Fetch schedules by team</h2>
 <p>Coming soon!</p>
-
-<!-- # Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require("kittn");
-
-let api = kittn.authorize("meowmeowmeow");
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-| Parameter    | Default | Description                                                                      |
-| ------------ | ------- | -------------------------------------------------------------------------------- |
-| include_cats | false   | If set to true, the result will also include cats.                               |
-| available    | true    | If set to false, the result will include kittens that have already been adopted. |
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require("kittn");
-
-let api = kittn.authorize("meowmeowmeow");
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-| Parameter | Description                      |
-| --------- | -------------------------------- |
-| ID        | The ID of the kitten to retrieve |
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require("kittn");
-
-let api = kittn.authorize("meowmeowmeow");
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted": ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-| Parameter | Description                    |
-| --------- | ------------------------------ |
-| ID        | The ID of the kitten to delete | -->
 
       </div>
       <div class="dark-box">
