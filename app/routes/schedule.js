@@ -4,14 +4,19 @@ const ScheduleController = require('../controllers/schedule')
 
 router.get('/', async (req, res) => {
   try {
-    if (!req.query.month) {
-      const schedule = await ScheduleController.findAll()
-      return res.send(schedule)
+    let schedule
+    if (req.query.month) {
+      schedule = await ScheduleController.find({
+        month: req.query.month,
+      })
+    } else if (req.query.team) {
+      schedule = await ScheduleController.find({
+        team: req.query.team,
+      })
+    } else {
+      schedule = await ScheduleController.findAll()
     }
 
-    const schedule = await ScheduleController.find({
-      month: req.query.month,
-    })
     return res.send(schedule)
   } catch (err) {
     return res.send(err.message, 400)
