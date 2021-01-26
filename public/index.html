@@ -690,7 +690,55 @@
 </tr>
 </tbody></table>
 <h2 id='fetch-schedules-by-team'>Fetch schedules by team</h2>
-<p>Coming soon!</p>
+<p>Fetch all scheduled games for a team.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://tripledouble.herokuapp.com/api/v1/schedule?team<span class="o">=</span>ATL
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"game_time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7:30p ET"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"game_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-01-01"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"home_team"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"short_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BRK"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"full_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Brooklyn Nets"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"visitor_team"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"short_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ATL"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"full_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Atlanta Hawks"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"game_time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7:30p ET"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"game_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-01-02"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"home_team"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"short_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ATL"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"full_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Atlanta Hawks"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"visitor_team"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"short_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CLE"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"full_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cleveland Cavaliers"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-8'>HTTP Request</h3>
+<p><code>GET https://tripledouble.herokuapp.com/api/v1/schedule?team=&lt;team_name&gt;</code></p>
+<h3 id='query-parameters-5'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>month</td>
+<td><code>ATL</code></td>
+<td>Team name</td>
+</tr>
+</tbody></table>
 
       </div>
       <div class="dark-box">
